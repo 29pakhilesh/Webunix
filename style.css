@@ -1,0 +1,329 @@
+/* GLOBAL */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.hidden { display: none; }
+
+.screen {
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* BOOT SCREEN */
+#boot-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #000;
+    color: white;
+}
+
+.boot-center { text-align: center; }
+
+/* Logo animation */
+.boot-logo-img {
+    width: 140px;
+    margin-bottom: 25px;
+    opacity: 0;
+    animation: fadeInScale 1.3s ease-out forwards;
+}
+
+@keyframes fadeInScale {
+    0% { transform: scale(0.7); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Spinner */
+.boot-spinner {
+    border: 4px solid rgba(255,255,255,0.2);
+    border-top: 4px solid white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* LOGIN SCREEN */
+#login-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+}
+
+.login-box {
+    background: rgba(0,0,0,0.6);
+    padding: 30px;
+    border-radius: 10px;
+    width: 300px;
+    color: white;
+    text-align: center;
+}
+
+.login-box input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    background: #222;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+.login-box button {
+    width: 100%;
+    padding: 10px;
+    background: #1e90ff;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.login-box button:hover {
+    background: #187bdb;
+}
+
+/* DESKTOP */
+#desktop {
+    width: 100vw;
+    height: 100vh;
+    background-image: url("https://YOUR_WALLPAPER_LINK_HERE");
+    background-size: cover;
+    background-position: center;
+}
+
+/* TASKBAR */
+#taskbar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 40px;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    color: white;
+}
+
+#start-button {
+    padding: 5px 10px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#taskbar-apps {
+    flex: 1;
+    display: flex;
+    margin-left: 10px;
+}
+
+#clock {
+    padding-right: 10px;
+}
+
+#desktop-icons {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+#shutdown-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#shutdown-box {
+    background: #111;
+    padding: 25px;
+    border-radius: 10px;
+    color: white;
+    text-align: center;
+    width: 250px;
+}
+
+#shutdown-box button {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px;
+    background: #222;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#shutdown-box button:hover {
+    background: #333;
+}
+
+.app-window {
+    position: absolute;
+    top: 80px;
+    left: 80px;
+    width: 400px;
+    height: 300px;
+    background: #000;
+    color: #0f0;
+    border: 2px solid #333;
+    display: flex;
+    flex-direction: column;
+}
+
+.title-bar {
+    background: #111;
+    padding: 5px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+.close-btn {
+    background: red;
+    border: none;
+    color: white;
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+}
+
+.terminal-output {
+    flex: 1;
+    padding: 6px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.terminal-input {
+    width: 100%;
+    padding: 6px;
+    background: #111;
+    color: #0f0;
+    border: none;
+    outline: none;
+    font-family: monospace;
+}
+
+.app-window {
+    position: absolute;
+    top: 70px;
+    left: 70px;
+    background: #000;
+    color: white;
+    border: 2px solid #333;
+    display: flex;
+    flex-direction: column;
+}
+
+.title-bar {
+    background: #111;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: white;
+}
+
+.close-btn {
+    background: red;
+    border: none;
+    color: white;
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    font-weight: bold;
+    border-radius: 3px;
+}
+
+/* add */
+.profile-avatar { width:48px;height:48px;border-radius:8px;object-fit:cover;margin-right:8px; }
+.login-box input { display:block; }
+
+/* Advanced taskbar */
+.taskbar {
+  position: fixed; left:0; right:0; bottom:10px; height:64px; display:flex;
+  align-items:center; justify-content:space-between; pointer-events:auto;
+  padding:0 14px; gap:12px; z-index:9999;
+  backdrop-filter: blur(8px) saturate(1.1);
+  background: linear-gradient(180deg, rgba(10,10,12,0.45), rgba(6,6,8,0.6));
+  border-radius:12px; margin:0 18px;
+}
+.taskbar.left { justify-content:flex-start; left:10px; right:auto; width:320px; }
+#taskbar-left { display:flex; align-items:center; gap:8px; }
+#start-button { width:42px; height:42px; display:flex; align-items:center; justify-content:center; border-radius:10px; cursor:pointer; font-weight:700; }
+#dock-container { flex:1; display:flex; justify-content:center; align-items:center; pointer-events:none; }
+.dock { display:flex; gap:10px; pointer-events:auto; padding:6px 12px; align-items:end; transform-origin:center bottom; }
+.dock .dock-item { width:48px; height:48px; display:flex; align-items:center; justify-content:center; border-radius:10px; background:rgba(255,255,255,0.03); cursor:pointer; transition: transform .12s cubic-bezier(.2,.9,.3,1), filter .12s; will-change:transform; user-select:none; }
+.dock .dock-item img { width:70%; height:70%; object-fit:contain; pointer-events:none; }
+
+/* Magnification: base scale + neighbor effect via JS (CSS fallback) */
+.dock .dock-item { transform: translateY(0) scale(1); }
+.dock .dock-item.hover { transform: translateY(-8px) scale(1.28); filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6)); }
+
+/* small neighbor scale classes */
+.dock .dock-item.left-near, .dock .dock-item.right-near { transform: translateY(-4px) scale(1.12); }
+
+#taskbar-right { display:flex; align-items:center; gap:8px; }
+.sys-btn { background:transparent; border:none; color:#fff; padding:8px; border-radius:8px; cursor:pointer; }
+#tray { display:flex; align-items:center; gap:8px; }
+.badge { background:#ff3b30; color:white; padding:2px 6px; border-radius:8px; font-size:12px; }
+#taskbar-profile-spot img.profile-avatar { width:36px; height:36px; border-radius:8px; }
+
+/* Notification center */
+#notification-center { position:fixed; right:18px; bottom:86px; width:320px; max-height:60vh; overflow:auto; background:#0b0b0d; border-radius:10px; padding:8px; box-shadow:0 12px 30px rgba(0,0,0,0.6); color:#fff; }
+
+/* compact responsive */
+@media (max-width:800px){ .taskbar { margin: 0 8px; } .dock .dock-item{ width:40px; height:40px;} }
+
+/* QUICK SETTINGS */
+#quick-settings { position:fixed; right:18px; bottom:86px; z-index:10020; }
+.qs-panel { width:360px; background:#0b0b0d; color:#fff; border-radius:10px; box-shadow:0 20px 50px rgba(0,0,0,0.6); overflow:hidden; transform-origin:right bottom; transition:transform .18s ease, opacity .18s; }
+#quick-settings.hidden .qs-panel { transform: scale(.96) translateY(6px); opacity:0; pointer-events:none; }
+.qs-header { display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:rgba(255,255,255,0.02); font-weight:600; }
+.qs-header button { background:transparent;border:none;color:#ddd;font-size:16px;cursor:pointer; }
+
+.qs-grid { display:grid; grid-template-columns: 1fr 1fr; gap:10px; padding:12px; }
+.qs-item { background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; display:flex; flex-direction:column; gap:8px; }
+.qs-item.wide { grid-column: 1 / -1; }
+.qs-toggle-row { display:flex; justify-content:space-between; align-items:center; font-weight:600; }
+.qs-subtext { font-size:12px; opacity:.8; }
+
+.switch { position:relative; display:inline-block; width:44px; height:24px; }
+.switch input { opacity:0; width:0;height:0; }
+.slider { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:#222; border-radius:24px; transition:.18s; }
+.slider:before { position:absolute; content:""; height:18px; width:18px; left:3px; top:3px; background:white; border-radius:50%; transition:.18s; }
+.switch input:checked + .slider { background:#1e90ff; }
+.switch input:checked + .slider:before { transform: translateX(20px); }
+
+input[type="range"] { width:100%; appearance:none; background:transparent; }
+input[type="range"]::-webkit-slider-runnable-track { height:6px; background:#222; border-radius:6px; }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; background:#fff; border-radius:50%; margin-top:-4px; cursor:pointer; }
+
+.qs-actions { display:flex; gap:6px; }
+.qs-actions button, .qs-footer button { padding:6px 10px; border-radius:6px; border:none; background:#131313; color:#fff; cursor:pointer; }
+.battery { width:100%; height:10px; background:#111; border-radius:6px; overflow:hidden; margin-top:4px; }
+#qs-battery-level { height:100%; background:linear-gradient(90deg,#2ecc71,#27ae60); transition:width .3s; }
+
+.qs-footer { display:flex; gap:8px; justify-content:space-between; align-items:center; }
