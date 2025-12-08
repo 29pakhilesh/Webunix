@@ -1,70 +1,122 @@
-// PROCESS MANAGER — lists open app windows & can close them
+// js/webunix_process_manager.js
+// Advanced Process Lifecycle Management (PIDs, Kill signals, Registry)
 
-window.openProcessManager = function () {
-    if (document.getElementById("procman-window"))
-        return bringFront(document.getElementById("procman-window"));
+(function() {
+    // Kernel-level Process Registry
+    const processes = new Map();
+    let pidCounter = 1000;
 
-    const win = document.createElement("div");
-    win.id = "procman-window";
-    win.className = "app-window";
-    win.style.width = "360px";
-    win.style.height = "320px";
+    window.kernel = window.kernel || {};
+    
+    window.kernel.process = {
+        spawn: (name, windowElement) => {
+            const pid = pidCounter++;
+            const proc = {
+                pid: pid,
+                name: name,
+                window: windowElement,
+                startTime: new Date(),
+                status: 'running'
+            };
+            
+            // Attach PID to the DOM element for reverse-lookup
+            windowElement.dataset.pid = pid;
+            processes.set(pid, proc);
+            
+            // Notify taskbar (optional hook)
+            if(window.webunixTaskbar && window.webunixTaskbar.notify) {
+                // window.webunixTaskbar.notify("Process Started", `${name} (PID: ${pid})`);
+            }
+            
+            return pid;
+        },
 
-    win.innerHTML = `
-      <div class="title-bar">
-        <span>Process Manager</span>
-        <button class="close-btn">×</button>
-      </div>
+        kill: (pid) => {
+            pid = parseInt(pid);
+            if (!processes.has(pid)) return { ok: false, msg: "PID not found" };
 
-      <div id="proc-list" style="flex:1; padding:10px; overflow-y:auto; background:#111; color:white; font-size:14px;">
-      </div>
+            const proc = processes.get(pid);
+            if (proc.window) {
+                // Animate closing
+                proc.window.style.transition = "transform 0.15s, opacity 0.15s";
+                proc.window.style.transform = "scale(0.9)";
+                proc.window.style.opacity = "0";
+                setTimeout(() => proc.window.remove(), 150);
+            }
+            processes.delete(pid);
+            return { ok: true, msg: `Process ${pid} killed` };
+        },
 
-      <div style="padding:8px; display:flex; justify-content:flex-end;">
-        <button id="proc-refresh">Refresh</button>
-      </div>
-    `;
+        list: () => Array.from(processes.values())
+    };
 
-    document.body.appendChild(win);
-    win.querySelector(".close-btn").onclick = () => win.remove();
-    const listEl = win.querySelector("#proc-list");
-    const refreshBtn = win.querySelector("#proc-refresh");
+    // UI Application: Process Manager Window
+    window.openProcessManager = function () {
+        if (document.getElementById("procman-window")) return;
 
-    function listProcesses() {
-        const windows = Array.from(document.querySelectorAll(".app-window"));
-        listEl.innerHTML = "";
+        const win = document.createElement("div");
+        win.id = "procman-window";
+        win.className = "app-window";
+        win.style.width = "400px";
+        win.style.height = "350px";
 
-        if (windows.length === 0) {
-            listEl.innerHTML = "<div>No active processes.</div>";
-            return;
+        // Register self as a process
+        const pid = window.kernel.process.spawn("ProcessManager", win);
+
+        win.innerHTML = `
+          <div class="title-bar">
+            <span>Task Manager (PID: ${pid})</span>
+            <button class="close-btn">×</button>
+          </div>
+          <div class="proc-header" style="display:flex;padding:5px 10px;background:#222;font-weight:bold;border-bottom:1px solid #333;">
+             <span style="flex:1">Name</span>
+             <span style="width:60px">PID</span>
+             <span style="width:60px">Action</span>
+          </div>
+          <div id="proc-list" style="flex:1; overflow-y:auto; background:#111; color:#ddd;"></div>
+          <div style="padding:8px; display:flex; justify-content:flex-end; border-top:1px solid #333;">
+            <button id="proc-refresh" style="padding:4px 12px;">Refresh</button>
+          </div>
+        `;
+
+        document.body.appendChild(win);
+        
+        // Use the new Window Manager capabilities (defined in main.js)
+        if(window.wm && window.wm.register) window.wm.register(win);
+
+        win.querySelector(".close-btn").onclick = () => window.kernel.process.kill(pid);
+        
+        const listEl = win.querySelector("#proc-list");
+
+        function render() {
+            listEl.innerHTML = "";
+            window.kernel.process.list().forEach(p => {
+                const row = document.createElement("div");
+                row.style.display = "flex";
+                row.style.padding = "6px 10px";
+                row.style.borderBottom = "1px solid #1a1a1a";
+                row.style.alignItems = "center";
+                
+                row.innerHTML = `
+                  <span style="flex:1; font-weight:500;">${p.name}</span>
+                  <span style="width:60px; opacity:0.7; font-family:monospace;">${p.pid}</span>
+                  <button class="kill-btn" style="width:60px; padding:2px; background:#d32f2f; border:none; color:white; border-radius:3px; cursor:pointer;">End</button>
+                `;
+                
+                row.querySelector(".kill-btn").onclick = () => {
+                    window.kernel.process.kill(p.pid);
+                    render();
+                };
+                listEl.appendChild(row);
+            });
         }
 
-        windows.forEach(w => {
-            const title = w.querySelector(".title-bar span")?.textContent || "Unknown App";
-            const row = document.createElement("div");
-            row.style.padding = "6px 4px";
-            row.style.display = "flex";
-            row.style.justifyContent = "space-between";
-            row.style.borderBottom = "1px solid #222";
-
-            row.innerHTML = `
-              <span>${title}</span>
-              <button class="kill-btn" style="padding:4px;">Kill</button>
-            `;
-
-            row.querySelector(".kill-btn").onclick = () => {
-                w.remove();
-                listProcesses();
-            };
-
-            listEl.appendChild(row);
-        });
-    }
-
-    refreshBtn.onclick = listProcesses;
-    listProcesses();
-    bringFront(win);
-};
-
-function bringFront(win) {
-    win.style.zIndex = Date.now();
-}
+        win.querySelector("#proc-refresh").onclick = render;
+        render();
+        // Auto-refresh every 2 seconds
+        const interval = setInterval(() => {
+            if(!document.body.contains(win)) clearInterval(interval);
+            else render();
+        }, 2000);
+    };
+})();

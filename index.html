@@ -3,184 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <title>WebUnix OS</title>
-
   <link rel="stylesheet" href="style.css">
-
   <link rel="stylesheet" data-name="vs/editor/editor.main" href="vs/editor/editor.main.css">
 </head>
 
-
-
 <body>
 
-  <!-- BOOT SCREEN -->
   <div id="boot-screen" class="screen">
     <div class="boot-center">
-      <img class="boot-logo-img" src="assets/logo.png">
+     <img class="boot-logo-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSIjMWU5MGZmIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0NSIgb3BhY2l0eT0iMC4yIi8+PHBhdGggZD0iTTUwIDE1IEw4NSA4NSBMMTUgODUgWiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMWU5MGZmIiBzdHJva2Utd2lkdGg9IjUiLz48L3N2Zz4=" alt="OS Logo"> 
       <div class="boot-spinner"></div>
     </div>
   </div>
 
-  <!-- LOGIN SCREEN -->
   <div id="login-screen" class="screen hidden">
-    <div class="login-box">
-      <h2>Welcome</h2>
-      <input id="login-username" type="text" placeholder="Username">
-      <input id="login-password" type="password" placeholder="Password">
-      <button id="login-btn">Login</button>
-    </div>
-    <!-- inside #login-screen -->
     <div class="login-box" id="auth-box">
-  <h2 id="auth-title">Sign In</h2>
+      <h2 id="auth-title">Sign In</h2>
 
-  <div id="auth-forms">
-    <!-- SIGNUP fields (hidden initially) -->
-    <div id="signup-form" class="hidden">
-      <input id="signup-username" placeholder="Choose username">
-      <input id="signup-password" type="password" placeholder="Choose password">
-      <input id="signup-avatar" placeholder="Avatar URL (optional)">
-      <button id="signup-btn">Create account</button>
-    </div>
+      <div id="auth-forms">
+        <div id="signup-form" class="hidden">
+          <input id="signup-username" placeholder="Choose username">
+          <input id="signup-password" type="password" placeholder="Choose password">
+          <input id="signup-avatar" placeholder="Avatar URL (optional)">
+          <button id="signup-btn">Create account</button>
+        </div>
 
-    <!-- LOGIN fields -->
-    <div id="signin-form">
-      <input id="login-username" placeholder="Username">
-      <input id="login-password" type="password" placeholder="Password">
-      <button id="login-btn">Login</button>
+        <div id="signin-form">
+          <input id="login-username" placeholder="Username">
+          <input id="login-password" type="password" placeholder="Password">
+          <button id="login-btn">Login</button>
+        </div>
+      </div>
+
+      <div style="margin-top:8px;">
+        <a href="#" id="toggle-auth">Create account</a>
+      </div>
     </div>
   </div>
 
-  <div style="margin-top:8px;">
-    <a href="#" id="toggle-auth">Create account</a>
-  </div>
-</div>
-
-  </div>
-
-  <!-- DESKTOP -->
-<div id="desktop" class="hidden">
-
-  <!-- TASKBAR -->
-  <div id="taskbar" class="taskbar centered">
-
-    <!-- Left Section -->
-    <div id="taskbar-left">
-      <div id="start-button">✦</div>
-      <div id="taskbar-drag" title="Drag to move"></div>
-    </div>
-
-    <!-- Dock (center, with magnification effect) -->
-    <div id="dock-container">
-      <div id="dock" class="dock"></div>
-    </div>
-
-    <!-- QUICK SETTINGS PANEL -->
-<div id="quick-settings" class="hidden" aria-hidden="true">
-  <div class="qs-panel">
-    <div class="qs-header">
-      <strong>Quick Settings</strong>
-      <button id="qs-close" aria-label="Close">✕</button>
-    </div>
-
-    <div class="qs-grid">
-      <div class="qs-item">
-        <div class="qs-toggle-row">
-          <div>Wi-Fi</div>
-          <label class="switch"><input id="qs-wifi" type="checkbox"><span class="slider"></span></label>
-        </div>
-        <div id="qs-wifi-ssid" class="qs-subtext">Not connected</div>
-      </div>
-
-      <div class="qs-item">
-        <div class="qs-toggle-row">
-          <div>Bluetooth</div>
-          <label class="switch"><input id="qs-bluetooth" type="checkbox"><span class="slider"></span></label>
-        </div>
-        <div class="qs-subtext">Off</div>
-      </div>
-
-      <div class="qs-item wide">
-        <label>Volume <span id="qs-vol-pct">50%</span></label>
-        <input id="qs-volume" type="range" min="0" max="100" value="50">
-        <div class="qs-actions">
-          <button id="qs-vol-mute">Mute</button>
-        </div>
-      </div>
-
-      <div class="qs-item wide">
-        <label>Brightness <span id="qs-bright-pct">100%</span></label>
-        <input id="qs-brightness" type="range" min="30" max="150" value="100">
-        <div class="qs-actions">
-          <button id="qs-auto-bright">Auto</button>
-        </div>
-      </div>
-
-      <div class="qs-item">
-        <div class="qs-toggle-row">
-          <div>Do Not Disturb</div>
-          <label class="switch"><input id="qs-dnd" type="checkbox"><span class="slider"></span></label>
-        </div>
-      </div>
-
-      <div class="qs-item">
-        <div class="qs-toggle-row">
-          <div>Airplane</div>
-          <label class="switch"><input id="qs-air" type="checkbox"><span class="slider"></span></label>
-        </div>
-      </div>
-
-      <div class="qs-item status">
-        <div>Battery</div>
-        <div id="qs-battery" class="battery"><div id="qs-battery-level" style="width:85%"></div></div>
-        <div class="qs-subtext" id="qs-battery-txt">85% — Charging</div>
-      </div>
-
-      <div class="qs-item wide qs-footer">
-        <button id="qs-lock">Lock</button>
-        <button id="qs-logout">Logout</button>
-        <button id="qs-settings">Settings</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-    <!-- Right Section -->
-    <div id="taskbar-right">
-
-      <div id="quick-controls">
-        <button id="quick-wifi" class="sys-btn" title="WiFi">WiFi</button>
-        <button id="quick-vol" class="sys-btn" title="Volume">Vol</button>
-        <button id="quick-bright" class="sys-btn" title="Brightness">☼</button>
-      </div>
-
-      <div id="tray">
-        <div id="notifications-badge" class="badge hidden">0</div>
-        <div id="tray-icons"></div>
-        <div id="taskbar-profile-spot"></div>
-        <div id="clock"></div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- Notification Center Panel -->
-  <div id="notification-center" class="hidden"></div>
-
-</div>
-
-
-<!-- Notification center container -->
-<div id="notification-center" class="hidden"></div>
-
+  <div id="desktop" class="hidden">
 
     <div id="desktop-icons"></div>
-  </div>
 
-  <!-- JS LOAD ORDER -->
-  <script src="js/webunix_boot.js"></script>
+    <div id="taskbar" class="taskbar centered">
+      
+      <div id="taskbar-left">
+        <div id="start-button">✦</div>
+        <div id="taskbar-drag" title="Drag to move"></div>
+      </div>
+
+      <div id="dock-container">
+        <div id="dock" class="dock"></div>
+      </div>
+
+      <div id="taskbar-right">
+        <div id="quick-controls">
+          <button id="quick-wifi" class="sys-btn" title="WiFi">WiFi</button>
+          <button id="quick-vol" class="sys-btn" title="Volume">Vol</button>
+          <button id="quick-bright" class="sys-btn" title="Brightness">☼</button>
+        </div>
+        <div id="tray">
+          <div id="notifications-badge" class="badge hidden">0</div>
+          <div id="tray-icons"></div>
+          <div id="taskbar-profile-spot"></div>
+          <div id="clock"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="notification-center" class="hidden"></div>
+    
+    <div id="quick-settings" class="hidden" aria-hidden="true">
+      <div class="qs-panel">
+        <div class="qs-header">
+          <strong>Quick Settings</strong>
+          <button id="qs-close" aria-label="Close">✕</button>
+        </div>
+        <div class="qs-grid">
+          <div class="qs-item wide qs-footer">
+            <button id="qs-lock">Lock</button>
+            <button id="qs-logout">Logout</button>
+            <button id="qs-settings">Settings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div> <script src="js/webunix_boot.js"></script>
+  <script src="js/webunix_auth.js"></script>
   <script src="js/webunix_login.js"></script>
   <script src="js/webunix_shutdown.js"></script>
   <script src="js/webunix_main.js"></script>
+  <script src="js/webunix_taskbar.js"></script>
 
   <script src="js/webunix_terminal.js"></script>
   <script src="js/webunix_filemanager.js"></script>
@@ -189,8 +103,14 @@
   <script src="js/webunix_process_manager.js"></script>
 
   <script src="vs/loader.js"></script>
-  <script src="vs/editor/editor.main.nls.js"></script>
-  <script src="vs/editor/editor.main.js"></script>
+  <script>
+    if(window.require) {
+      require.config({ paths: { 'vs': 'vs' }});
+      require(['vs/editor/editor.main'], function() {
+        console.log("Monaco loaded");
+      });
+    }
+  </script>
 
 </body>
 </html>

@@ -1,80 +1,95 @@
 // js/webunix_editor.js
-// Simple editor that prefers Monaco if available, falls back to textarea.
-// Usage: window.openEditor(filename?, content?)
-window.openEditor = function(filename = "untitled.txt", content = "") {
-  // ensure VFS available
-  const VFS_KEY = "webunix_vfs";
-  function loadVFS(){ try { return JSON.parse(localStorage.getItem(VFS_KEY)) || {}; } catch(e){ return {}; } }
-  function saveVFS(vfs){ localStorage.setItem(VFS_KEY, JSON.stringify(vfs)); }
+// Advanced Editor: Supports VFS reading/writing and window management
 
-  // If called from FileManager with content, prefer that; else load from VFS
-  const vfs = loadVFS();
-  if(!content && vfs[filename]) content = vfs[filename];
+window.openEditor = function(filename, content) {
+  // If no args, just open empty
+  if (!filename) filename = "untitled.txt";
+  
+  // If content not provided, try to read from VFS (resolve absolute path if possible)
+  if (content === undefined && filename !== "untitled.txt") {
+      // Assuming filename passed is a full path or simple name from current dir context
+      // For this simple version, we'll rely on the VFS global if available
+      if (window.vfs) {
+          // If it doesn't start with /, assume root for now (or handle relative later)
+          const path = filename.startsWith('/') ? filename : '/' + filename;
+          const entry = window.vfs.read(path);
+          if (entry && entry.type === 'file') {
+              content = entry.content;
+              filename = path; // Update to full path
+          } else {
+              content = "";
+          }
+      }
+  }
 
-  // create window
   const win = document.createElement("div");
   win.className = "app-window";
-  win.style.width = "720px";
-  win.style.height = "480px";
-  win.id = "editor-window-" + Date.now();
+  win.style.width = "600px";
+  win.style.height = "450px";
+  
+  // Register with Process Manager
+  const pid = window.kernel?.process?.spawn ? window.kernel.process.spawn("Editor", win) : Date.now();
+  
   win.innerHTML = `
-    <div class="title-bar"><span>Editor — ${filename}</span><div style="display:flex;gap:6px;">
-      <button id="editor-save">Save</button>
-      <button id="editor-download">Download</button>
-      <button class="close-btn">×</button>
-    </div></div>
-    <div id="editor-body" style="flex:1;display:flex;flex-direction:column;overflow:hidden;"></div>
+    <div class="title-bar">
+        <span>Editor - ${filename}</span>
+        <div class="win-controls">
+            <button class="close-btn">×</button>
+        </div>
+    </div>
+    <div style="display:flex; flex-direction:column; height:calc(100% - 30px);">
+        <div style="padding:5px; background:#222; display:flex; gap:10px; border-bottom:1px solid #333;">
+            <button id="editor-save-${pid}">Save</button>
+            <button id="editor-saveas-${pid}">Save As...</button>
+        </div>
+        <textarea id="editor-area-${pid}" style="flex:1; background:#111; color:#fff; border:none; padding:10px; resize:none; font-family:monospace; outline:none;"></textarea>
+    </div>
   `;
+  
   document.body.appendChild(win);
-  const body = win.querySelector("#editor-body");
-  const saveBtn = win.querySelector("#editor-save");
-  const dlBtn = win.querySelector("#editor-download");
-  win.querySelector(".close-btn").onclick = () => win.remove();
+  
+  // Register with Window Manager (Drag support)
+  if(window.wm && window.wm.register) window.wm.register(win);
 
-  // Try Monaco
-  function useTextarea() {
-    body.innerHTML = `<textarea id="editor-ta" style="flex:1;width:100%;height:100%;background:#050505;color:#ddd;border:none;padding:10px;font-family:monospace;">${content.replace(/</g,"&lt;")}</textarea>`;
-    const ta = body.querySelector("#editor-ta");
-    saveBtn.onclick = () => {
-      const v = ta.value;
-      const nv = loadVFS();
-      nv[filename] = v;
-      saveVFS(nv);
-      alert("Saved");
-    };
-    dlBtn.onclick = () => {
-      const blob = new Blob([ta.value], {type:"text/plain"});
-      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click(); a.remove();
-    };
-  }
+  const textArea = win.querySelector(`#editor-area-${pid}`);
+  textArea.value = content || "";
 
-  if (window.monaco && window.monaco.editor) {
-    body.innerHTML = `<div id="monaco-${Date.now()}" style="flex:1;height:100%;"></div>`;
-    const mount = body.firstElementChild;
-    const model = monaco.editor.createModel(content, "plaintext");
-    const editor = monaco.editor.create(mount, { model, automaticLayout: true, minimap: { enabled: false } });
-    saveBtn.onclick = () => {
-      const v = model.getValue();
-      const nv = loadVFS(); nv[filename] = v; saveVFS(nv); alert("Saved");
-    };
-    dlBtn.onclick = () => {
-      const blob = new Blob([model.getValue()], {type:"text/plain"});
-      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = filename; document.body.appendChild(a); a.click(); a.remove();
-    };
-  } else if (window.require && typeof window.require === "function") {
-    // attempt to load monaco via AMD if loader present
-    try {
-      require(["vs/editor/editor.main"], function() {
-        if (window.monaco && window.monaco.editor) {
-          // small delay to ensure CSS/layout
-          setTimeout(() => window.openEditor(filename, content), 50);
-        } else useTextarea();
-      }, useTextarea);
-    } catch (e) { useTextarea(); }
-  } else {
-    useTextarea();
-  }
+  // Close Handler
+  win.querySelector(".close-btn").onclick = () => {
+      if(window.kernel?.process) window.kernel.process.kill(pid);
+      else win.remove();
+  };
 
-  // focus helper
-  win.onclick = () => win.style.zIndex = Date.now();
+  // Save Handler
+  win.querySelector(`#editor-save-${pid}`).onclick = () => {
+      if(!window.vfs) return alert("File System not loaded!");
+      
+      const path = filename.startsWith('/') ? filename : '/' + filename;
+      const res = window.vfs.write(path, textArea.value);
+      
+      if(res.ok) {
+          // Visual feedback
+          const btn = win.querySelector(`#editor-save-${pid}`);
+          const oldText = btn.innerText;
+          btn.innerText = "Saved!";
+          setTimeout(() => btn.innerText = oldText, 1000);
+      } else {
+          alert("Error saving: " + res.msg);
+      }
+  };
+  
+  // Save As Handler
+  win.querySelector(`#editor-saveas-${pid}`).onclick = () => {
+      const newPath = prompt("Enter full path to save (e.g., /home/notes.txt):", filename);
+      if(newPath) {
+          const res = window.vfs.write(newPath, textArea.value);
+          if(res.ok) {
+              filename = newPath;
+              win.querySelector(".title-bar span").textContent = `Editor - ${filename}`;
+              alert("Saved to " + newPath);
+          } else {
+              alert(res.msg);
+          }
+      }
+  };
 };
