@@ -4,11 +4,17 @@
 window.openTerminal = function () {
     // 1. Create Window
     const win = document.createElement("div");
+    
+    // NEW: Register with Process Manager
+    const pid = window.kernel?.process?.spawn ? window.kernel.process.spawn("Terminal", win) : Date.now();
+    // FIX (for dock indicator): Add unique ID
+    win.id = "terminal-window-" + pid; 
+
     win.className = "app-window terminal-theme";
     win.style.width = "600px";
     win.style.height = "400px";
     
-    // 2. HTML Structure (Inline styles force visibility)
+    // 2. HTML Structure
     win.innerHTML = `
         <div class="title-bar" style="background:#333; color:#ddd;">
             <span style="font-family:monospace;">root@webunix:~</span>
@@ -35,7 +41,11 @@ window.openTerminal = function () {
     const prompt = win.querySelector("#term-prompt");
     const closeBtn = win.querySelector(".close-btn");
 
-    closeBtn.onclick = () => win.remove();
+    // NEW: Use process manager to kill/close
+    closeBtn.onclick = () => { 
+        if(window.kernel?.process) window.kernel.process.kill(pid);
+        else win.remove();
+    };
     
     // Auto-focus input when clicking anywhere in terminal
     win.onclick = () => {
