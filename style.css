@@ -156,3 +156,21 @@
     font-size: 13px;
     padding-right: 4px;
 }
+
+/* Add to style.css */
+
+/* Start Menu Enhancements */
+#start-menu .menu-header {
+    font-weight: bold;
+    color: #1e90ff; /* Blue for emphasis */
+    padding: 5px 15px 2px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 5px;
+}
+
+#start-menu .running-item {
+    color: #4cd964; /* Green for active/running state */
+    font-weight: 500;
+}
