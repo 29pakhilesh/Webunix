@@ -22,7 +22,13 @@
     }
 
     const win = document.createElement("div");
+    
+    // NEW: Register with Process Manager
+    const pid = window.kernel?.process?.spawn ? window.kernel.process.spawn("FileManager", win) : Date.now();
+    
+    // Use fixed ID for Taskbar tracking
     win.id = "filemgr-window";
+    
     win.className = "app-window";
     win.style.width = "520px";
     win.style.height = "360px";
@@ -60,7 +66,11 @@
     const deleteBtn = win.querySelector("#delete-file");
     const openBtn = win.querySelector("#open-in-editor");
 
-    close.onclick = () => win.remove();
+    // NEW: Use process manager to kill/close
+    close.onclick = () => { 
+        if(window.kernel?.process) window.kernel.process.kill(pid);
+        else win.remove();
+    };
 
     function renderList(){
       vfs = loadVFS();
