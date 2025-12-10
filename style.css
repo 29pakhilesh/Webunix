@@ -68,3 +68,91 @@
     color: black;
 }   
 
+/* Profile Avatar */
+.profile-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover; /* Prevents the image from looking squashed */
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+/* --- FIXES FOR TASKBAR GLITCHES --- */
+
+/* 1. Fix Empty Squares (Target SVG instead of IMG) */
+.dock-item svg {
+    width: 24px;
+    height: 24px;
+    pointer-events: none; /* Let clicks pass through to the button */
+}
+/* Remove the old img rule if it exists, or just override it */
+.dock-item img {
+    display: none; 
+}
+
+/* 2. Fix System Tray Icons (WiFi, Vol, Battery) */
+.sys-group {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2px 6px;
+    margin-right: 8px;
+}
+
+.sys-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: 0.2s;
+}
+
+.sys-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.sys-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: white;
+}
+
+/* 3. Fix Profile Alignment (Name dropping down) */
+#taskbar-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between circle and name */
+    padding: 4px 10px 4px 4px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-left: 10px;
+}
+
+#taskbar-profile:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.profile-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    /* Ensure flex centering works inside the avatar circle */
+    display: flex !important; 
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-name {
+    color: white;
+    font-weight: 500;
+    font-size: 13px;
+    padding-right: 4px;
+}

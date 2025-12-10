@@ -1,11 +1,8 @@
-// js/webunix_taskbar.js - Ultimate Advanced Taskbar
-// Features: Vector Icons, Live Battery, Active App Indicators, Interactive Tray
-
+// js/webunix_taskbar.js - Fixed Battery & Layout
 (function() {
     const dock = document.getElementById("dock");
     const taskbarRight = document.getElementById("taskbar-right");
 
-    // --- 1. PREMIUM VECTOR ICONS (No more broken images) ---
     const ICONS = {
         terminal: `<svg viewBox="0 0 24 24"><path d="M20,4H4C2.9,4,2,4.9,2,6v12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z M20,18H4V6h16V18z M7.5,15l4.5-4.5L7.5,6v9z M12,15h7v-2h-7V15z" fill="white"/></svg>`,
         folder: `<svg viewBox="0 0 24 24"><path d="M20,6h-8l-2-2H4C2.9,4,2,4.9,2,6v12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V8C22,6.9,21.1,6,20,6z" fill="#3b8df0"/></svg>`,
@@ -16,7 +13,6 @@
         battery: `<svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" fill="#66bb6a"/></svg>`
     };
 
-    // --- 2. BUILD DOCK ---
     const APPS = [
         { id: "Terminal", icon: ICONS.terminal, action: () => window.openTerminal?.(), check: "terminal-window" },
         { id: "Files", icon: ICONS.folder, action: () => window.openFileManager?.(), check: "filemgr-window" },
@@ -30,11 +26,8 @@
             const it = document.createElement("div");
             it.className = "dock-item";
             it.innerHTML = app.icon;
-            it.dataset.checkId = app.check; // Store ID to check if running
-
-            // Click Interaction
+            it.dataset.checkId = app.check;
             it.onclick = () => {
-                // Bounce animation
                 it.style.transition = "transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1)";
                 it.style.transform = "translateY(-15px) scale(1.1)";
                 setTimeout(() => it.style.transform = "", 150);
@@ -46,70 +39,74 @@
         updateActiveIndicators();
     }
 
-    // Check which apps are open and show a dot under them
     function updateActiveIndicators() {
         document.querySelectorAll(".dock-item").forEach(el => {
-            const targetId = el.dataset.checkId;
-            // Matches any ID that starts with the key (e.g. editor-window-123 matches editor-window)
-            const isOpen = document.querySelector(`[id^="${targetId}"]`);
+            const isOpen = document.querySelector(`[id^="${el.dataset.checkId}"]`);
             if (isOpen) el.classList.add("running");
             else el.classList.remove("running");
         });
     }
-    // Poll constantly for open windows to keep dock sync'd
     setInterval(updateActiveIndicators, 1000);
 
-
-    // --- 3. BUILD SYSTEM TRAY ---
     function buildTray() {
         taskbarRight.innerHTML = "";
-
-        // Toggles Group
         const pill = document.createElement("div");
         pill.className = "sys-group";
         
-        // WiFi Button (Interactive)
         const wifiBtn = createSysBtn(ICONS.wifi, "WiFi", () => {
             wifiBtn.classList.toggle("active");
             wifiBtn.style.opacity = wifiBtn.classList.contains("active") ? "1" : "0.5";
         });
-        wifiBtn.classList.add("active"); // Default on
+        wifiBtn.classList.add("active");
 
-        // Volume Button
         const volBtn = createSysBtn(ICONS.vol, "Volume", () => alert("Volume Control"));
         
-        // Battery (with auto-detect)
-        const batBtn = createSysBtn(ICONS.battery, "Battery", null);
-        navigator.getBattery?.().then(b => {
-            const updateBat = () => batBtn.title = `Battery: ${Math.round(b.level*100)}%${b.charging?' (Charging)':''}`;
-            updateBat();
-            b.addEventListener('levelchange', updateBat);
-        });
+        // --- Battery Logic ---
+        const batBtn = createSysBtn(ICONS.battery, "Battery");
+        const batTxt = document.createElement("span");
+        batTxt.style.cssText = "font-size:12px; margin-left:6px; font-weight:600; color:white;";
+        batBtn.appendChild(batTxt); 
+
+        if (navigator.getBattery) {
+            navigator.getBattery().then(b => {
+                const update = () => {
+                    const lvl = Math.round(b.level * 100);
+                    batTxt.innerText = lvl + "%";
+                    const svg = batBtn.querySelector("svg");
+                    if(svg) {
+                        if(b.charging) svg.style.fill = "#4cd964";
+                        else if(lvl <= 20) svg.style.fill = "#ff453a";
+                        else svg.style.fill = "white";
+                    }
+                    batBtn.title = `Battery: ${lvl}% ${b.charging?'(Charging)':''}`;
+                };
+                update();
+                b.addEventListener('levelchange', update);
+                b.addEventListener('chargingchange', update);
+            });
+        } else {
+            batTxt.innerText = "N/A";
+            batBtn.title = "Battery API not supported in this browser (Use Chrome)";
+        }
 
         pill.appendChild(wifiBtn);
         pill.appendChild(volBtn);
         pill.appendChild(batBtn);
         taskbarRight.appendChild(pill);
 
-
-        // Clock
         const clockBox = document.createElement("div");
         clockBox.id = "clock-box";
         clockBox.style.marginLeft = "8px";
         taskbarRight.appendChild(clockBox);
         
-        function updateClock() {
+        setInterval(() => {
             const now = new Date();
             clockBox.innerHTML = `
                 <div style="font-weight:600; font-size:13px; line-height:1.1;">${now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
                 <div style="font-size:10px; opacity:0.7;">${now.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'})}</div>
             `;
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+        }, 1000);
 
-
-        // Profile
         renderProfile();
     }
 
@@ -125,21 +122,12 @@
     function renderProfile() {
         const u = JSON.parse(sessionStorage.getItem("webunix_session_v2") || "{}");
         const username = u.user || "Guest";
-        
         const p = document.createElement("div");
         p.id = "taskbar-profile";
-        // Simple avatar color hash
         const color = "hsl(" + (username.length * 50) + ", 70%, 50%)";
-
-        p.innerHTML = `
-          <div class="profile-avatar" style="background:${color}; display:grid; place-items:center; font-weight:bold; color:white;">
-            ${username[0].toUpperCase()}
-          </div>
-          <div class="profile-name">${username}</div>
-        `;
-        
+        p.innerHTML = `<div class="profile-avatar" style="background:${color}; display:grid; place-items:center; font-weight:bold; color:white;">${username[0].toUpperCase()}</div><div class="profile-name">${username}</div>`;
         p.onclick = () => {
-             if(confirm("Log out of WebUnix?")) {
+             if(confirm("Log out?")) {
                  sessionStorage.removeItem("webunix_session_v2");
                  location.reload();
              }
@@ -147,8 +135,6 @@
         taskbarRight.appendChild(p);
     }
 
-    // Initialize
     buildDock();
     buildTray();
-
 })();
