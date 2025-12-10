@@ -11,6 +11,10 @@ window.openSettings = function() {
   const win = document.createElement("div");
   win.id = "settings-window";
   win.className = "app-window";
+  
+  // NEW: Register with Process Manager
+  const pid = window.kernel?.process?.spawn ? window.kernel.process.spawn("Settings", win) : Date.now();
+  
   win.style.width = "420px";
   win.style.height = "260px";
   
@@ -38,7 +42,10 @@ window.openSettings = function() {
   if(window.wm && window.wm.register) window.wm.register(win);
 
   // Logic
-  win.querySelector(".close-btn").onclick = () => win.remove();
+  win.querySelector(".close-btn").onclick = () => {
+      if(window.kernel?.process) window.kernel.process.kill(pid);
+      else win.remove();
+  };
 
   const THEME_KEY = "webunix_theme";
   const WALL_KEY = "webunix_wallpaper";
