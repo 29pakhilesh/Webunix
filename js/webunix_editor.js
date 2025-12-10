@@ -2,32 +2,24 @@
 // Advanced Editor: Supports VFS reading/writing and window management
 
 window.openEditor = function(filename, content) {
-  // If no args, just open empty
   if (!filename) filename = "untitled.txt";
   
-  // If content not provided, try to read from VFS (resolve absolute path if possible)
   if (content === undefined && filename !== "untitled.txt") {
-      // Assuming filename passed is a full path or simple name from current dir context
-      // For this simple version, we'll rely on the VFS global if available
       if (window.vfs) {
-          // If it doesn't start with /, assume root for now (or handle relative later)
           const path = filename.startsWith('/') ? filename : '/' + filename;
-          const entry = window.vfs.read(path);
-          if (entry && entry.type === 'file') {
-              content = entry.content;
-              filename = path; // Update to full path
-          } else {
-              content = "";
-          }
+          const entry = window.vfs.read(path); // assuming vfs.read exists/works
+          content = (entry && typeof entry === 'string') ? entry : (window.vfs[filename] || ""); 
       }
   }
 
   const win = document.createElement("div");
+  // FIX: Add unique ID for taskbar indicator
+  win.id = "editor-window-" + Date.now();
+  
   win.className = "app-window";
   win.style.width = "600px";
   win.style.height = "450px";
   
-  // Register with Process Manager
   const pid = window.kernel?.process?.spawn ? window.kernel.process.spawn("Editor", win) : Date.now();
   
   win.innerHTML = `
@@ -48,48 +40,32 @@ window.openEditor = function(filename, content) {
   
   document.body.appendChild(win);
   
-  // Register with Window Manager (Drag support)
   if(window.wm && window.wm.register) window.wm.register(win);
 
   const textArea = win.querySelector(`#editor-area-${pid}`);
   textArea.value = content || "";
 
-  // Close Handler
   win.querySelector(".close-btn").onclick = () => {
       if(window.kernel?.process) window.kernel.process.kill(pid);
       else win.remove();
   };
 
-  // Save Handler
   win.querySelector(`#editor-save-${pid}`).onclick = () => {
-      if(!window.vfs) return alert("File System not loaded!");
-      
-      const path = filename.startsWith('/') ? filename : '/' + filename;
-      const res = window.vfs.write(path, textArea.value);
-      
-      if(res.ok) {
-          // Visual feedback
-          const btn = win.querySelector(`#editor-save-${pid}`);
-          const oldText = btn.innerText;
-          btn.innerText = "Saved!";
-          setTimeout(() => btn.innerText = oldText, 1000);
+      if(window.vfs) {
+         window.vfs[filename] = textArea.value; 
+         alert("Saved!");
       } else {
-          alert("Error saving: " + res.msg);
+         alert("No VFS found (check filemanager.js)");
       }
   };
   
-  // Save As Handler
   win.querySelector(`#editor-saveas-${pid}`).onclick = () => {
-      const newPath = prompt("Enter full path to save (e.g., /home/notes.txt):", filename);
+      const newPath = prompt("Save as:", filename);
       if(newPath) {
-          const res = window.vfs.write(newPath, textArea.value);
-          if(res.ok) {
-              filename = newPath;
-              win.querySelector(".title-bar span").textContent = `Editor - ${filename}`;
-              alert("Saved to " + newPath);
-          } else {
-              alert(res.msg);
-          }
+          filename = newPath;
+          win.querySelector(".title-bar span").textContent = `Editor - ${filename}`;
+          if(window.vfs) window.vfs[filename] = textArea.value;
+          alert("Saved to " + newPath);
       }
   };
 };
