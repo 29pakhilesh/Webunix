@@ -1,3 +1,10 @@
+/* style.css */
+:root {
+  --accent-color: #1e90ff; /* Default Blue */
+  --bg-dark: #1a1a1a;
+  --bg-light: #f0f0f0;
+}
+
 /* GLOBAL & BOOT */
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
 .hidden { display: none !important; }
@@ -7,7 +14,7 @@
 #boot-screen { display: flex; justify-content: center; align-items: center; background: #000; color: white; z-index: 10000; }
 .boot-center { text-align: center; }
 .boot-logo-img { width: 120px; margin-bottom: 20px; animation: pulse 2s infinite; }
-.boot-spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #1e90ff; border-radius: 50%; width: 30px; height: 30px; animation: spin 0.8s linear infinite; margin: 0 auto; }
+.boot-spinner { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid var(--accent-color); border-radius: 50%; width: 30px; height: 30px; animation: spin 0.8s linear infinite; margin: 0 auto; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 @keyframes pulse { 0%, 100% { opacity: 0.8; } 50% { opacity: 1; } }
 
@@ -16,9 +23,9 @@
 .login-box { background: rgba(20, 20, 20, 0.9); padding: 40px; border-radius: 12px; width: 320px; text-align: center; border: 1px solid #333; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
 .login-box h2 { color: #fff; margin-bottom: 20px; font-weight: 300; letter-spacing: 1px; }
 .login-box input { width: 100%; padding: 12px; margin: 8px 0; background: #111; border: 1px solid #333; color: white; border-radius: 6px; outline: none; transition: 0.2s; }
-.login-box input:focus { border-color: #1e90ff; }
-.login-box button { width: 100%; padding: 12px; margin-top: 15px; background: #1e90ff; border: none; color: white; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
-.login-box button:hover { background: #1873cc; }
+.login-box input:focus { border-color: var(--accent-color); }
+.login-box button { width: 100%; padding: 12px; margin-top: 15px; background: var(--accent-color); border: none; color: white; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; }
+.login-box button:hover { filter: brightness(1.2); }
 #toggle-auth { color: #888; font-size: 12px; text-decoration: none; display: inline-block; margin-top: 15px; }
 
 /* DESKTOP */
@@ -33,144 +40,377 @@
 .title-bar { height: 32px; background: #252525; border-bottom: 1px solid #333; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; color: #ccc; font-size: 13px; user-select: none; }
 .close-btn { width: 14px; height: 14px; background: #ff5f56; border-radius: 50%; border: none; cursor: pointer; display: block; }
 .close-btn:hover { background: #ff3b30; }
-
-/* RESIZER HANDLE */
 .win-resizer { position: absolute; bottom: 0; right: 0; width: 16px; height: 16px; cursor: se-resize; background: linear-gradient(135deg, transparent 50%, #555 50%); z-index: 10; }
 
-/* CONTEXT MENU */
-#context-menu { position: absolute; width: 180px; background: rgba(30, 30, 30, 0.95); backdrop-filter: blur(12px); border: 1px solid #444; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: none; flex-direction: column; padding: 5px 0; z-index: 99999; }
-.ctx-item { padding: 8px 15px; color: #ddd; font-size: 13px; cursor: pointer; display: flex; justify-content: space-between; transition: 0.1s; }
-.ctx-item:hover { background: #1e90ff; color: white; }
-.ctx-sep { height: 1px; background: #444; margin: 4px 0; }
-
 /* TASKBAR */
-#taskbar { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); height: 50px; background: rgba(20,20,20,0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; display: flex; align-items: center; padding: 0 10px; width: auto; min-width: 300px; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); z-index: 5000; }
-#start-button { font-size: 20px; color: #fff; padding: 0 10px; cursor: pointer; transition: 0.2s; }
-#start-button:hover { color: #1e90ff; transform: scale(1.1); }
-.dock { display: flex; gap: 8px; }
-.dock-item { width: 38px; height: 38px; background: rgba(255,255,255,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; position: relative; }
-.dock-item:hover { background: rgba(255,255,255,0.2); transform: translateY(-5px); }
-.dock-item img { width: 24px; height: 24px; }
-.dock-item::after { content: ''; position: absolute; bottom: -6px; width: 4px; height: 4px; background: #fff; border-radius: 50%; opacity: 0; }
-.dock-item.running::after { opacity: 1; }
-
-#taskbar-right { margin-left: auto; display: flex; align-items: center; color: white; gap: 10px; font-size: 13px; padding-right: 10px; }
-
-/* Start Menu */
-#start-menu { animation: slideUp 0.2s ease-out; }
-@keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-/* TERMINAL OVERRIDES */
-.terminal-theme input {
-    caret-color: #0f0; /* Green blinking cursor */
-}
-.terminal-theme ::selection {
-    background: #00ff00;
-    color: black;
-}   
-
-/* Profile Avatar */
-.profile-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover; /* Prevents the image from looking squashed */
-  margin-left: 8px;
-  cursor: pointer;
+/* TASKBAR CONTAINER */
+#taskbar { 
+    position: absolute; 
+    bottom: 10px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    height: 50px; 
+    background: rgba(20,20,20,0.7); 
+    backdrop-filter: blur(15px); 
+    border: 1px solid rgba(255,255,255,0.1); 
+    border-radius: 16px; 
+    display: flex; 
+    align-items: center; 
+    padding: 0 10px; 
+    width: auto; 
+    min-width: 300px; 
+    gap: 10px; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3); 
+    z-index: 5000; 
 }
 
-/* --- FIXES FOR TASKBAR GLITCHES --- */
-
-/* 1. Fix Empty Squares (Target SVG instead of IMG) */
-.dock-item svg {
-    width: 24px;
-    height: 24px;
-    pointer-events: none; /* Let clicks pass through to the button */
+/* START BUTTON */
+#start-button { 
+    font-size: 20px; 
+    color: #fff; 
+    padding: 0 10px; 
+    cursor: pointer; 
+    transition: 0.2s; 
+    display: flex; 
+    align-items: center; 
 }
-/* Remove the old img rule if it exists, or just override it */
-.dock-item img {
-    display: none; 
+#start-button:hover { 
+    color: var(--accent-color); 
+    transform: scale(1.1); 
+}
+#start-button svg { 
+    width: 24px; 
+    height: 24px; 
+    pointer-events: none; 
 }
 
-/* 2. Fix System Tray Icons (WiFi, Vol, Battery) */
-.sys-group {
+/* DOCK APPS */
+.dock { 
+    display: flex; 
+    gap: 8px; 
+}
+.dock-item { 
+    width: 38px; 
+    height: 38px; 
+    background: rgba(255,255,255,0.1); 
+    border-radius: 10px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    cursor: pointer; 
+    transition: 0.2s; 
+    position: relative; 
+}
+.dock-item:hover { 
+    background: rgba(255,255,255,0.2); 
+    transform: translateY(-5px); 
+}
+.dock-item svg { 
+    width: 24px; 
+    height: 24px; 
+    pointer-events: none; 
+}
+.dock-item.running::after { 
+    content: ''; 
+    position: absolute; 
+    bottom: -6px; 
+    width: 4px; 
+    height: 4px; 
+    background: #fff; 
+    border-radius: 50%; 
+}
+
+/* RIGHT TRAY */
+#taskbar-right { 
+    margin-left: auto; 
+    display: flex; 
+    align-items: center; 
+    color: white; 
+    gap: 8px; /* Tighter gap for better fit */
+    font-size: 13px; 
+    padding-right: 6px; 
+}
+
+/* SYSTEM ICONS GROUP */
+.sys-group { 
+    display: flex; 
+    align-items: center; 
+    background: rgba(255, 255, 255, 0.1); 
+    border-radius: 20px; 
+    padding: 2px 6px; 
+    margin-right: 8px; 
+}
+.sys-btn { 
+    background: transparent; 
+    border: none; 
+    cursor: pointer; 
+    padding: 6px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border-radius: 50%; 
+    transition: 0.2s; 
+}
+.sys-btn:hover { 
+    background: rgba(255, 255, 255, 0.2); 
+}
+.sys-btn svg { 
+    width: 18px; 
+    height: 18px; 
+    fill: white; 
+}
+
+/* --- FIXED PROFILE PILL --- */
+#taskbar-profile {
     display: flex;
+    flex-direction: row;
     align-items: center;
+    gap: 10px;
+    height: 40px; /* Fixed height matching dock */
+    padding: 4px 12px 4px 4px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    padding: 2px 6px;
-    margin-right: 8px;
-}
-
-.sys-btn {
-    background: transparent;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
     cursor: pointer;
-    padding: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: 0.2s;
+    transition: all 0.2s ease;
+    margin-left: 12px;
+}
+#taskbar-profile:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-.sys-btn:hover {
+/* PREVENT AVATAR SQUASHING */
+#taskbar-profile img, 
+#taskbar-profile .profile-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px; /* Critical fix */
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0; /* Prevents flexbox from shrinking image */
+}
+
+/* ALIGN TEXT PROPERLY */
+.profile-name {
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 1;
+    white-space: nowrap;
+    letter-spacing: 0.3px;
+}
+
+/* SETTINGS APP STYLES */
+.settings-container { display: flex; height: 100%; }
+.settings-sidebar { width: 140px; background: #222; border-right: 1px solid #333; padding: 15px 10px; display: flex; flex-direction: column; gap: 5px; }
+.settings-nav-item { padding: 8px 12px; color: #aaa; border-radius: 6px; cursor: pointer; font-size: 13px; transition: 0.2s; }
+.settings-nav-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
+.settings-nav-item.active { background: var(--accent-color); color: white; font-weight: 500; }
+.settings-content { flex: 1; padding: 20px; overflow-y: auto; color: #ddd; }
+.st-group { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #333; }
+.st-label { display: block; font-size: 12px; font-weight: 600; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.st-input { width: 100%; padding: 8px; background: #111; border: 1px solid #444; color: white; border-radius: 4px; outline: none; }
+.st-input:focus { border-color: var(--accent-color); }
+.st-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.st-btn { padding: 8px 16px; background: #333; border: 1px solid #444; color: white; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+.st-btn.primary { background: var(--accent-color); border-color: transparent; }
+.st-btn:hover { filter: brightness(1.1); }
+.st-btn.danger { background: #d63031; color: white; border: none; }
+
+.sm-app-label {
+    color: #ffffff !important; /* Bright White */
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8); /* Shadow for contrast */
+    font-weight: 600;
+}
+
+.sm-search-input {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+#logout-confirm-overlay h3,
+#logout-confirm-overlay p {
+    color: #ffffff !important;
+    text-shadow: none;
+}
+
+/* style.css Partial Update for Start Menu */
+
+/* style.css Start Button Fixes */
+
+#start-button { 
+    font-size: 20px; 
+    color: #fff; 
+    padding: 0 14px; /* Increased Hitbox */
+    cursor: pointer; 
+    transition: 0.2s; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    border-radius: 8px; /* Smooth corners on hover */
+    z-index: 5002; /* Higher than taskbar bg */
+}
+
+#start-button:hover { 
+    background: rgba(255, 255, 255, 0.1); /* Glow effect */
+    color: var(--accent-color); 
+    transform: scale(1.05);
+}
+
+#start-button:active {
+    transform: scale(0.95); /* Click feedback */
     background: rgba(255, 255, 255, 0.2);
 }
 
-.sys-btn svg {
-    width: 18px;
-    height: 18px;
-    fill: white;
+#start-button svg { 
+    width: 26px; /* Slightly bigger icon */
+    height: 26px; 
+    pointer-events: none; 
 }
 
-/* 3. Fix Profile Alignment (Name dropping down) */
-#taskbar-profile {
+/* Ensure Menu is always visible above dock */
+/* Update style.css completely or replace these sections */
+
+/* START MENU - FIXED POSITION */
+#start-menu {
+    position: absolute;
+    bottom: 70px; /* Just above taskbar */
+    left: 10px;   /* Align with start button */
+    width: 500px;
+    height: 400px;
+    background: rgba(28, 28, 30, 0.95);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    display: flex;
+    flex-direction: column;
+    z-index: 6000;
+    overflow: hidden;
+    padding: 0;
+    /* Ensure text is white */
+    color: white;
+}
+
+.sm-grid-container {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 90px);
+    gap: 15px;
+    padding: 30px;
+}
+
+.sm-app-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.sm-app-card:hover { transform: translateY(-5px); }
+
+.sm-icon-square {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+.sm-icon-square svg { width: 30px; height: 30px; }
+
+/* START BUTTON - VISUAL FEEDBACK */
+#start-button { 
+    font-size: 20px; 
+    color: #fff; 
+    padding: 0 14px;
+    cursor: pointer; 
+    transition: 0.2s; 
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 8px;
+}
+#start-button:hover { 
+    background: rgba(255, 255, 255, 0.1); 
+    color: var(--accent-color); 
+}
+#start-button:active {
+    background: rgba(255, 255, 255, 0.2); 
+    transform: scale(0.95);
+}
+
+/* --- START MENU FOOTER FIX --- */
+.sm-system-bar {
+    height: 60px;
+    background: rgba(0, 0, 0, 0.3); /* Darker footer background */
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex !important; /* Force Flexbox */
+    align-items: center !important; /* Vertically center items */
+    justify-content: space-between !important; /* Space out User and Power btn */
+    padding: 0 20px;
+    margin-top: auto; /* Push to bottom if using flex column */
+}
+
+/* User Profile Group */
+.sm-user-info {
     display: flex;
     align-items: center;
-    gap: 10px; /* Space between circle and name */
-    padding: 4px 10px 4px 4px;
-    border-radius: 30px;
+    gap: 12px; /* Space between circle and name */
     cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
     transition: background 0.2s;
-    margin-left: 10px;
 }
 
-#taskbar-profile:hover {
-    background: rgba(255, 255, 255, 0.15);
+.sm-user-info:hover {
+    background: rgba(255, 255, 255, 0.1);
 }
 
-.profile-avatar {
-    width: 32px;
-    height: 32px;
+/* User Avatar Circle */
+.sm-avatar-circle {
+    width: 36px;
+    height: 36px;
+    background: var(--accent-color, #1e90ff);
     border-radius: 50%;
-    font-size: 14px;
-    /* Ensure flex centering works inside the avatar circle */
-    display: flex !important; 
+    display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.profile-name {
+    font-weight: 700;
     color: white;
-    font-weight: 500;
-    font-size: 13px;
-    padding-right: 4px;
+    font-size: 16px;
+    flex-shrink: 0; /* Prevent squashing */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* Add to style.css */
-
-/* Start Menu Enhancements */
-#start-menu .menu-header {
-    font-weight: bold;
-    color: #1e90ff; /* Blue for emphasis */
-    padding: 5px 15px 2px;
-    font-size: 11px;
-    text-transform: uppercase;
+/* User Name Text */
+.sm-user-info span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
     letter-spacing: 0.5px;
-    margin-top: 5px;
 }
 
-#start-menu .running-item {
-    color: #4cd964; /* Green for active/running state */
-    font-weight: 500;
+/* Power Button */
+.sm-power-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ff5f56; /* Red icon */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.sm-power-btn:hover {
+    background: #ff5f56;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(255, 95, 86, 0.4);
 }
