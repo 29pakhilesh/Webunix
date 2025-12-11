@@ -54,3 +54,13 @@ WebUnix is entirely client-side and requires no server.
 
 1.  **Open Index:** Open the `index.html` file directly in any modern web browser (Chrome, Firefox, Safari, Edge).
 2.  **Boot & Login:** The system will run a simulated boot sequence. You must create a new user account to complete the login and access the desktop.
+
+## 👨‍💻 Author
+
+**29pakhilesh**
+- GitHub: [@29pakhilesh](https://github.com/29pakhilesh)
+
+## 📄 License
+
+This project is protected by copyright. See the [LICENSE](LICENSE) file for details.
+© 2025 29pakhilesh. All Rights Reserved.
