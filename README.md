@@ -30,6 +30,8 @@ It features core kernel-like process management, a virtual file system (VFS), an
 | **File Manager** | A graphical interface to browse, create, and manage files within the VFS. | Sidebar navigation and seamless integration with the Editor. |
 | **Editor** | A robust text editor capable of reading and writing content back to the VFS. | Integrated save functionality and clean code-focused interface. |
 | **Clock** | A utility app featuring a Main Clock, World Time zones, and visual, **analog dial** displays for both Timer and Stopwatch functions. | Dynamic CSS transforms for hand rotation and live percentage feedback. |
+| **Browser** | A fully functional, tabbed web browser simulation with navigation controls and bookmarks. | Iframe-based rendering with multi-tab state management. |
+| **Store** | A native-style e-commerce application featuring a curated product catalog. | Dynamic grid generation, lazy loading images, and fallback handling. |
 | **Process Manager** | A graphical utility to view all running processes (PIDs) and manually terminate them. | Live process list rendering with auto-refresh. |
 | **Settings** | Configuration panel for personalization (accent color, wallpaper) and system functions (user management, factory reset). | Uses CSS variables for instant runtime theme changes. |
 
