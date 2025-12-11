@@ -159,6 +159,23 @@ window.openTerminal = function () {
                 print("Wake up, Neo...", "#0f0");
                 // Matrix rain effect hook can go here
                 break;
+
+            // js/webunix_terminal.js
+
+// ... inside runCommand(raw) switch statement ...
+
+            // --- USER MANAGEMENT ---
+            case "users":
+                const allUsers = JSON.parse(localStorage.getItem("webunix_users_v2") || "{}");
+                const list = Object.keys(allUsers);
+                
+                if(list.length === 0) {
+                    print("No users found.", "yellow");
+                } else {
+                    print("Registered Users:", "#aaa");
+                    list.forEach(u => print(`- ${u}`, "cyan"));
+                }
+                break;
                 
             // --- PACKAGE MANAGER ---
             case "pkg":
@@ -195,6 +212,7 @@ window.openTerminal = function () {
                 print(`Command not found: ${cmd}`, "red");
         }
     }
+    
     
     // Initial focus
     setTimeout(() => inp.focus(), 100);
