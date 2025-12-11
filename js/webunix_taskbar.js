@@ -1,26 +1,22 @@
-// js/webunix_taskbar.js - Fixed Battery & Layout
+// js/webunix_taskbar.js
 (function() {
     const dock = document.getElementById("dock");
     const taskbarRight = document.getElementById("taskbar-right");
 
-    // js/webunix_taskbar.js
-// ... (start of file)
-
-// --- 1. ICONS (Added Process Manager Icon) ---
     const ICONS = {
         terminal: `<svg viewBox="0 0 24 24"><path d="M20,4H4C2.9,4,2,4.9,2,6v12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V6C22,4.9,21.1,4,20,4z M20,18H4V6h16V18z M7.5,15l4.5-4.5L7.5,6v9z M12,15h7v-2h-7V15z" fill="white"/></svg>`,
         folder: `<svg viewBox="0 0 24 24"><path d="M20,6h-8l-2-2H4C2.9,4,2,4.9,2,6v12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V8C22,6.9,21.1,6,20,6z" fill="#3b8df0"/></svg>`,
         editor: `<svg viewBox="0 0 24 24"><path d="M14,2H6C4.9,2,4,2.9,4,4v16c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V8L14,2z M6,20V4h7v5h5v11H6z" fill="#ccc"/></svg>`,
         settings: `<svg viewBox="0 0 24 24"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65z" fill="#999"/></svg>`,
-        process: `<svg viewBox="0 0 24 24"><path d="M11 21h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2v-2h-2v2zm-2 8h-2v-2h2v2zm-2-4h-2v-2h2v2zm0-4h-2V7h2v2zm8 8h-2v-2h2v2zm2-4h-2v-2h2v2zm0-4h-2V7h2v2zM5 5v2h2V5H5zm2 14h2v-2h-2v2zm10 0v-2h2v2h-2zM5 9v2h2V9H5zm10-2v2h2V7h-2zM9 5h6v2H9V5z" fill="#f05050"/></svg>`, // New icon for process manager
+        process: `<svg viewBox="0 0 24 24"><path d="M11 21h2v-2h-2v2zm0-4h2v-2h-2v2zm0-4h2v-2h-2v2zm-2 8h-2v-2h2v2zm-2-4h-2v-2h2v2zm0-4h-2V7h2v2zm8 8h-2v-2h2v2zm2-4h-2v-2h2v2zm0-4h-2V7h2v2zM5 5v2h2V5H5zm2 14h2v-2h-2v2zm10 0v-2h2v2h-2zM5 9v2h2V9H5zm10-2v2h2V7h-2zM9 5h6v2H9V5z" fill="#f05050"/></svg>`,
         wifi: `<svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3c-1.65-1.66-4.34-1.66-6 0zm-4-4l2 2c2.76-2.76 7.24-2.76 10 0l2-2C15.14 9.14 8.87 9.14 5 13z" fill="white"/></svg>`,
-        vol: `<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="white"/></svg>`,
+        volHigh: `<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="white"/></svg>`,
+        volLow: `<svg viewBox="0 0 24 24"><path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z" fill="white"/></svg>`,
+        volMute: `<svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z" fill="white"/></svg>`,
         battery: `<svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z" fill="#66bb6a"/></svg>`
     };
 
-    // --- 2. BUILD DOCK (Added Process Manager App) ---
     const APPS = [
-        // New: Task/Process Manager
         { id: "ProcMgr", icon: ICONS.process, action: () => window.openProcessManager?.(), check: "procman-window" },
         { id: "Terminal", icon: ICONS.terminal, action: () => window.openTerminal?.(), check: "terminal-window" },
         { id: "Files", icon: ICONS.folder, action: () => window.openFileManager?.(), check: "filemgr-window" },
@@ -28,7 +24,6 @@
         { id: "Settings", icon: ICONS.settings, action: () => window.openSettings?.(), check: "settings-window" }
     ];
 
-// ... (rest of buildDock, updateActiveIndicators, etc. remains the same)
     function buildDock() {
         dock.innerHTML = "";
         APPS.forEach((app) => {
@@ -57,89 +52,99 @@
     }
     setInterval(updateActiveIndicators, 1000);
 
+    let currentVolume = parseInt(localStorage.getItem("webunix_volume") || "100");
+
+    function getVolIcon(level) {
+        if(level <= 0) return ICONS.volMute;
+        if(level < 50) return ICONS.volLow;
+        return ICONS.volHigh;
+    }
+
+    function toggleVolume(btn) {
+        const existing = document.getElementById("volume-popup");
+        if(existing) { existing.remove(); return; }
+        const rect = btn.getBoundingClientRect();
+        const pop = document.createElement("div");
+        pop.id = "volume-popup";
+        pop.style.left = (rect.left - 8) + "px"; pop.style.bottom = "70px";
+        pop.innerHTML = `<div class="vol-slider-wrap"><input type="range" class="vol-range" min="0" max="100" value="${currentVolume}"></div><div class="vol-icon-state">${getVolIcon(currentVolume)}</div>`;
+        document.body.appendChild(pop);
+        pop.querySelector("input").oninput = (e) => {
+            currentVolume = e.target.value;
+            localStorage.setItem("webunix_volume", currentVolume);
+            const icon = getVolIcon(currentVolume);
+            pop.querySelector(".vol-icon-state").innerHTML = icon;
+            btn.innerHTML = icon;
+        };
+        setTimeout(() => {
+            const h = (e) => { if(!pop.contains(e.target) && !btn.contains(e.target)) { pop.remove(); document.removeEventListener("click", h); } };
+            document.addEventListener("click", h);
+        }, 10);
+    }
+
     function buildTray() {
         taskbarRight.innerHTML = "";
         const pill = document.createElement("div");
         pill.className = "sys-group";
         
-        const wifiBtn = createSysBtn(ICONS.wifi, "WiFi", () => {
-            wifiBtn.classList.toggle("active");
-            wifiBtn.style.opacity = wifiBtn.classList.contains("active") ? "1" : "0.5";
-        });
-        wifiBtn.classList.add("active");
+        const wifi = createSysBtn(ICONS.wifi, "WiFi");
+        wifi.onclick = () => { wifi.classList.toggle("active"); wifi.style.opacity = wifi.classList.contains("active") ? "1" : "0.5"; };
+        wifi.classList.add("active");
 
-        const volBtn = createSysBtn(ICONS.vol, "Volume", () => alert("Volume Control"));
+        const vol = createSysBtn(getVolIcon(currentVolume), "Volume");
+        vol.onclick = () => toggleVolume(vol);
         
-        // --- Battery Logic ---
-        const batBtn = createSysBtn(ICONS.battery, "Battery");
+        const bat = createSysBtn(ICONS.battery, "Battery");
         const batTxt = document.createElement("span");
-        batTxt.style.cssText = "font-size:12px; margin-left:6px; font-weight:600; color:white;";
-        batBtn.appendChild(batTxt); 
+        batTxt.style.cssText = "font-size:12px;margin-left:6px;font-weight:600;color:white;";
+        bat.appendChild(batTxt); 
+        if(navigator.getBattery) navigator.getBattery().then(b => { const u=()=>batTxt.innerText=Math.round(b.level*100)+"%"; u(); b.addEventListener('levelchange',u); });
+        else batTxt.innerText = "100%";
 
-        if (navigator.getBattery) {
-            navigator.getBattery().then(b => {
-                const update = () => {
-                    const lvl = Math.round(b.level * 100);
-                    batTxt.innerText = lvl + "%";
-                    const svg = batBtn.querySelector("svg");
-                    if(svg) {
-                        if(b.charging) svg.style.fill = "#4cd964";
-                        else if(lvl <= 20) svg.style.fill = "#ff453a";
-                        else svg.style.fill = "white";
-                    }
-                    batBtn.title = `Battery: ${lvl}% ${b.charging?'(Charging)':''}`;
-                };
-                update();
-                b.addEventListener('levelchange', update);
-                b.addEventListener('chargingchange', update);
-            });
-        } else {
-            batTxt.innerText = "N/A";
-            batBtn.title = "Battery API not supported in this browser (Use Chrome)";
-        }
+        pill.append(wifi, vol, bat);
+        taskbarRight.append(pill);
 
-        pill.appendChild(wifiBtn);
-        pill.appendChild(volBtn);
-        pill.appendChild(batBtn);
-        taskbarRight.appendChild(pill);
-
-        const clockBox = document.createElement("div");
-        clockBox.id = "clock-box";
-        clockBox.style.marginLeft = "8px";
-        taskbarRight.appendChild(clockBox);
+        const clock = document.createElement("div");
+        clock.id = "clock-box";
+        clock.style.cssText = "margin-left:12px;display:flex;align-items:center;gap:8px;color:#fff;font-size:13px;font-weight:500;white-space:nowrap;";
+        taskbarRight.appendChild(clock);
         
         setInterval(() => {
             const now = new Date();
-            clockBox.innerHTML = `
-                <div style="font-weight:600; font-size:13px; line-height:1.1;">${now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div>
-                <div style="font-size:10px; opacity:0.7;">${now.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'})}</div>
-            `;
+            clock.innerHTML = `<span>${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><span style="opacity:0.4">|</span><span style="opacity:0.9">${now.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})}</span>`;
         }, 1000);
 
         renderProfile();
     }
 
-    function createSysBtn(iconHtml, title, onClick) {
-        const btn = document.createElement("button");
-        btn.className = "sys-btn";
-        btn.innerHTML = iconHtml;
-        btn.title = title;
-        if (onClick) btn.onclick = onClick;
-        return btn;
+    function createSysBtn(html, title) {
+        const b = document.createElement("button");
+        b.className = "sys-btn"; b.innerHTML = html; b.title = title;
+        return b;
     }
 
     function renderProfile() {
-        const u = JSON.parse(sessionStorage.getItem("webunix_session_v2") || "{}");
-        const username = u.user || "Guest";
+        const taskbarRight = document.getElementById("taskbar-right");
+        const existing = document.getElementById("taskbar-profile");
+        if(existing) existing.remove();
+
+        const u = JSON.parse(sessionStorage.getItem("webunix_session_v2")||"{}").user || "Guest";
+        const all = JSON.parse(localStorage.getItem("webunix_users_v2")||"{}");
+        const av = (all[u]||{}).avatar;
+
         const p = document.createElement("div");
         p.id = "taskbar-profile";
-        const color = "hsl(" + (username.length * 50) + ", 70%, 50%)";
-        p.innerHTML = `<div class="profile-avatar" style="background:${color}; display:grid; place-items:center; font-weight:bold; color:white;">${username[0].toUpperCase()}</div><div class="profile-name">${username}</div>`;
-        p.onclick = () => {
-             if(confirm("Log out?")) {
-                 sessionStorage.removeItem("webunix_session_v2");
-                 location.reload();
-             }
+        const img = av 
+            ? `<img src="${av}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`
+            : `<div class="profile-avatar" style="width:32px;height:32px;border-radius:50%;background:hsl(${u.length*50},70%,50%);display:grid;place-items:center;color:white;font-weight:bold;">${u[0].toUpperCase()}</div>`;
+        
+        p.innerHTML = `${img}<div class="profile-name">${u}</div>`;
+
+        p.onclick = async () => {
+            if(await window.Modal.confirm(`Log out of session for ${u}?`, "End Session", true)) {
+                sessionStorage.removeItem("webunix_session_v2");
+                location.reload();
+            }
         };
         taskbarRight.appendChild(p);
     }
