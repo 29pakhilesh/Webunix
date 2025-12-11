@@ -57,7 +57,9 @@ window.launch = (app) => {
     else if(app === "FileManager") window.openFileManager?.();
     else if(app === "Editor") window.openEditor?.();
     else if(app === "Settings") window.openSettings?.();
-    else if(app === "Clock") window.openClock?.(); // ADD THIS LINE
+    else if(app === "Clock") window.openClock?.(); 
+    else if(app === "Browser") window.openBrowser?.();
+    else if(app === "Store") window.openStore?.();
     else window.Modal.alert(app + " is not installed.", "System");
 };
 
@@ -88,9 +90,9 @@ document.addEventListener("DOMContentLoaded", () => {
             { name: "Editor", action: "launch('Editor')", bg: "#00b894", icon: `<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="white"/></svg>` },
             { name: "Settings", action: "launch('Settings')", bg: "#636e72", icon: `<svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z" fill="white"/></svg>` },
             { name: "Tasks", action: "window.openProcessManager()", bg: "#e17055", icon: `<svg viewBox="0 0 24 24"><path d="M5 9.2h3V19H5zM10.6 5h2.8v14h-2.8zM16.2 13H19v6h-2.8z" fill="white"/></svg>` },
-            { name: "Store", action: "window.Modal.alert('Store is offline.', 'WebUnix')", bg: "#d63031", icon: `<svg viewBox="0 0 24 24"><path d="M20,6h-4c0-2.21-1.79-4-4-4S8,3.79,8,6H4C2.9,6,2,6.9,2,8v12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V8 C22,6.9,21.1,6,20,6z M12,4c1.1,0,2,0.9,2,2h-4C10,4.9,10.9,4,12,4z M20,20H4V8h16V20z" fill="white"/></svg>` },
-            { name: "Clock", action: "window.openClock?.()", bg: "#6c5ce7", icon: `<svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" fill="white"/></svg>` }, // MODIFIED
-            { name: "Browser", action: "window.Modal.alert('Connecting...', 'Satellite Uplink')", bg: "#0984e3", icon: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" fill="white"/></svg>` }
+            { name: "Store", action: "window.openStore ? window.openStore() : window.Modal.alert('Store offline', 'Error')", bg: "#2874f0", icon: `<svg viewBox="0 0 24 24"><path d="M20,6h-4c0-2.21-1.79-4-4-4S8,3.79,8,6H4C2.9,6,2,6.9,2,8v12c0,1.1,0.9,2,2,2h16c1.1,0,2-0.9,2-2V8 C22,6.9,21.1,6,20,6z M12,4c1.1,0,2,0.9,2,2h-4C10,4.9,10.9,4,12,4z M20,20H4V8h16V20z" fill="white"/></svg>` },
+            { name: "Clock", action: "window.openClock?.()", bg: "#6c5ce7", icon: `<svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z" fill="white"/></svg>` }, 
+            { name: "Browser", action: "launch('Browser')", bg: "#0984e3", icon: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" fill="white"/></svg>` }
         ];
 
         menuEl.innerHTML = `
