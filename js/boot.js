@@ -33,9 +33,9 @@ window.addEventListener("load", () => {
             setTimeout(() => {
                 bootScreen.classList.add("hidden");
                 
-                // Focus Password
-                const pass = document.getElementById("login-password");
-                if(pass) pass.focus();
+                // Focus Username
+                const user = document.getElementById("login-username");
+                if(user) user.focus();
                 
             }, 1200);
 
