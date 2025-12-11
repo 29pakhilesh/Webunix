@@ -100,6 +100,13 @@ function currentUser(){
     document.getElementById("desktop").classList.remove("hidden");
   });
 
+  const handleEnter = (e) => { if(e.key === "Enter") loginBtn.click(); };
+const uInput = document.getElementById("login-username");
+const pInput = document.getElementById("login-password");
+
+if(uInput) uInput.addEventListener("keydown", handleEnter);
+if(pInput) pInput.addEventListener("keydown", handleEnter);
+
   const cur = currentUser();
   if(cur){
     document.getElementById("login-screen")?.classList.add("hidden");
