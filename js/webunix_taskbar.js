@@ -60,37 +60,75 @@
         return ICONS.volHigh;
     }
 
+    // js/webunix_taskbar.js (Replace existing toggleVolume function)
+    // js/webunix_taskbar.js (Replace existing toggleVolume function)
     function toggleVolume(btn) {
         const existing = document.getElementById("volume-popup");
         if(existing) { existing.remove(); return; }
+        
         const rect = btn.getBoundingClientRect();
         const pop = document.createElement("div");
         pop.id = "volume-popup";
-        pop.style.left = (rect.left - 8) + "px"; pop.style.bottom = "70px";
-        pop.innerHTML = `<div class="vol-slider-wrap"><input type="range" class="vol-range" min="0" max="100" value="${currentVolume}"></div><div class="vol-icon-state">${getVolIcon(currentVolume)}</div>`;
+        
+        // Positioning for horizontal slider
+        pop.style.cssText = `
+            position: fixed; 
+            z-index: 9999;
+            left: ${rect.left - 60}px; 
+            bottom: 70px;
+        `;
+        
+        // Added volume percentage display
+        pop.innerHTML = `<div class="vol-slider-wrap">
+            <input type="range" class="vol-range" min="0" max="100" value="${currentVolume}">
+        </div>
+        <div id="vol-percent" style="color:white; font-size:12px; font-weight:600;">${currentVolume}%</div>`; 
         document.body.appendChild(pop);
-        pop.querySelector("input").oninput = (e) => {
-            currentVolume = e.target.value;
+        
+        const rangeInput = pop.querySelector(".vol-range");
+        const percentDisplay = pop.querySelector("#vol-percent");
+
+        // Set initial track level and percentage display
+        pop.style.setProperty('--vol-level', `${currentVolume}%`);
+
+        rangeInput.oninput = (e) => {
+            const level = parseInt(e.target.value);
+            currentVolume = level;
             localStorage.setItem("webunix_volume", currentVolume);
-            const icon = getVolIcon(currentVolume);
-            pop.querySelector(".vol-icon-state").innerHTML = icon;
-            btn.innerHTML = icon;
+            
+            // Update CSS Variable for track fill
+            pop.style.setProperty('--vol-level', `${level}%`);
+
+            // Update visible percentage text
+            percentDisplay.textContent = `${level}%`;
+            
+            // Update the tray button icon instantly
+            btn.innerHTML = getVolIcon(currentVolume); 
         };
+        
+        // Ensure initial button icon is correct
+        btn.innerHTML = getVolIcon(currentVolume); 
+
         setTimeout(() => {
-            const h = (e) => { if(!pop.contains(e.target) && !btn.contains(e.target)) { pop.remove(); document.removeEventListener("click", h); } };
+            const h = (e) => { 
+                if(!pop.contains(e.target) && !btn.contains(e.target)) { 
+                    pop.remove(); 
+                    document.removeEventListener("click", h); 
+                } 
+            };
             document.addEventListener("click", h);
         }, 10);
     }
-
     function buildTray() {
         taskbarRight.innerHTML = "";
-        const pill = document.createElement("div");
-        pill.className = "sys-group";
+        
+        // Removed the unnecessary 'pill' (sys-group) wrapper for a cleaner look.
         
         const wifi = createSysBtn(ICONS.wifi, "WiFi");
         wifi.onclick = () => { wifi.classList.toggle("active"); wifi.style.opacity = wifi.classList.contains("active") ? "1" : "0.5"; };
+        // FIX: Initialize active state immediately for cleaner presentation
         wifi.classList.add("active");
-
+        
         const vol = createSysBtn(getVolIcon(currentVolume), "Volume");
         vol.onclick = () => toggleVolume(vol);
         
@@ -98,20 +136,25 @@
         const batTxt = document.createElement("span");
         batTxt.style.cssText = "font-size:12px;margin-left:6px;font-weight:600;color:white;";
         bat.appendChild(batTxt); 
+        // Changed bat button style to be a group item for battery text
+        bat.classList.add("sys-group-item");
+        
         if(navigator.getBattery) navigator.getBattery().then(b => { const u=()=>batTxt.innerText=Math.round(b.level*100)+"%"; u(); b.addEventListener('levelchange',u); });
         else batTxt.innerText = "100%";
 
-        pill.append(wifi, vol, bat);
-        taskbarRight.append(pill);
+        // Append items directly to the taskbarRight, relying on CSS for layout.
+        taskbarRight.append(wifi, vol, bat);
 
         const clock = document.createElement("div");
         clock.id = "clock-box";
-        clock.style.cssText = "margin-left:12px;display:flex;align-items:center;gap:8px;color:#fff;font-size:13px;font-weight:500;white-space:nowrap;";
+        // Streamline clock style
+        clock.style.cssText = "margin-left:12px;display:flex;align-items:center;gap:6px;color:#fff;font-size:13px;font-weight:500;white-space:nowrap;padding: 0 5px;";
         taskbarRight.appendChild(clock);
         
         setInterval(() => {
             const now = new Date();
-            clock.innerHTML = `<span>${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><span style="opacity:0.4">|</span><span style="opacity:0.9">${now.toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})}</span>`;
+            // Simpler clock format: Time | Date
+            clock.innerHTML = `<span>${now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}</span><span style="opacity:0.4">|</span><span style="opacity:0.9">${now.toLocaleDateString([],{month:'short',day:'numeric'})}</span>`;
         }, 1000);
 
         renderProfile();
@@ -135,8 +178,8 @@
         const p = document.createElement("div");
         p.id = "taskbar-profile";
         const img = av 
-            ? `<img src="${av}" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">`
-            : `<div class="profile-avatar" style="width:32px;height:32px;border-radius:50%;background:hsl(${u.length*50},70%,50%);display:grid;place-items:center;color:white;font-weight:bold;">${u[0].toUpperCase()}</div>`;
+            ? `<img src="${av}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">` // Smaller avatar
+            : `<div class="profile-avatar" style="width:28px;height:28px;border-radius:50%;background:hsl(${u.length*50},70%,50%);display:grid;place-items:center;color:white;font-weight:bold;font-size:13px;">${u[0].toUpperCase()}</div>`;
         
         p.innerHTML = `${img}<div class="profile-name">${u}</div>`;
 
