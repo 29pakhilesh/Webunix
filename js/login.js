@@ -45,4 +45,4 @@ function startClock() {
   if (!startClock._interval) startClock._interval = setInterval(tick, 1000);
 }
 
-<script src="js/webunix_auth.js"></script>
+<script src="js/auth.js"></script>
