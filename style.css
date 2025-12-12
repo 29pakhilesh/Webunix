@@ -790,3 +790,44 @@ body ::-moz-selection {
     border: 2px solid var(--accent-color); /* Blue border for design */
     box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
+
+/* style.css - Additions for Traffic Lights */
+
+/* Traffic Lights Container */
+.traffic-lights {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding-left: 0px; /* Adjust alignment */
+}
+
+/* Individual Buttons */
+.tl-btn {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    padding: 0;
+    outline: none;
+}
+
+/* Colors */
+.tl-close { background: #ff5f57; border: 1px solid #e0443e; }
+.tl-min   { background: #febc2e; border: 1px solid #dba520; }
+.tl-max   { background: #28c840; border: 1px solid #1aa030; }
+
+/* Hover Symbols (X, -, +) */
+.traffic-lights:hover .tl-close::after { content: '×'; position: absolute; top: -2px; left: 3px; color: #4e0002; font-size: 10px; font-weight: bold; }
+.traffic-lights:hover .tl-min::after   { content: '–'; position: absolute; top: -3px; left: 3px; color: #664d02; font-size: 10px; font-weight: bold; }
+.traffic-lights:hover .tl-max::after   { content: '+'; position: absolute; top: -2px; left: 3px; color: #003606; font-size: 10px; font-weight: bold; }
+
+/* Update Title Bars to accommodate Traffic Lights */
+.title-bar {
+    padding-left: 12px !important; /* Give space on the left */
+    display: flex;
+    align-items: center;
+}
+/* Push the title text to the center or right if needed */
+.title-bar span { margin-left: 10px; font-weight: 500; opacity: 0.8; }
